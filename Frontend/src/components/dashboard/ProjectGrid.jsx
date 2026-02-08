@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, MoreVertical, Archive } from 'lucide-react';
+import { LayoutDashboard, MoreVertical, Archive, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,19 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Link } from 'react-router-dom';
+import { useProjects } from '../../hooks/useProjects';
 
 const ProjectGrid = ({ projectsLoading, filteredProjects }) => {
+    const { deleteProject } = useProjects();
+
+    const handleDelete = (e, projectId) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (window.confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
+            deleteProject(projectId);
+        }
+    };
+
     return (
         <div className="space-y-4">
             <h2 className="text-xl font-bold flex items-center gap-2">
@@ -38,19 +48,24 @@ const ProjectGrid = ({ projectsLoading, filteredProjects }) => {
                                         <CardTitle className="text-xl font-bold truncate pr-4">
                                             {project.name}
                                         </CardTitle>
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild onClick={(e) => e.preventDefault()}>
-                                                <Button variant="ghost" size="icon" className="text-muted-foreground">
-                                                    <MoreVertical size={18} />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem className="text-destructive">
-                                                    <Archive className="mr-2 h-4 w-4" />
-                                                    Archive
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
+                                        <div onClick={(e) => e.preventDefault()}>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button variant="ghost" size="icon" className="text-muted-foreground">
+                                                        <MoreVertical size={18} />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuItem
+                                                        className="text-destructive"
+                                                        onClick={(e) => handleDelete(e, project.id)}
+                                                    >
+                                                        <Trash2 className="mr-2 h-4 w-4" />
+                                                        Delete Project
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </div>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
                                         <CardDescription className="line-clamp-2 min-h-[40px]">

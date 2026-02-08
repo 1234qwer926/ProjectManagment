@@ -34,11 +34,22 @@ export const useProjects = () => {
         },
     });
 
+    const deleteProjectMutation = useMutation({
+        mutationFn: async (id) => {
+            const { data } = await api.delete(`/projects/${id}`);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['projects'] });
+        },
+    });
+
     return {
         projects: projectsQuery.data || [],
         isLoading: projectsQuery.isLoading,
         createProject: createProjectMutation.mutate,
         updateProject: updateProjectMutation.mutate,
+        deleteProject: deleteProjectMutation.mutate,
     };
 
 };

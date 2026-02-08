@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     ArrowLeft,
@@ -37,8 +37,9 @@ import Layout from '../components/layout/Layout';
 
 const ProjectDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { data: project, isLoading: projectLoading } = useProject(id);
-    const { updateProject } = useProjects();
+    const { updateProject, deleteProject } = useProjects();
     const { modules, isLoading: modulesLoading, createModule, deleteModule, updateModule } = useModules(id);
 
     const [isEditingProject, setIsEditingProject] = useState(false);
@@ -47,6 +48,13 @@ const ProjectDetail = () => {
     const [editingModuleId, setEditingModuleId] = useState(null);
     const [editModuleTitle, setEditModuleTitle] = useState('');
     const [editModuleDesc, setEditModuleDesc] = useState('');
+
+    const handleDeleteProject = () => {
+        if (window.confirm('Are you sure you want to delete this project? This action cannot be undone and all associated modules and tasks will be removed.')) {
+            deleteProject(id);
+            navigate('/dashboard');
+        }
+    };
 
     const handleSaveProjectName = () => {
         if (editProjectName.trim() && editProjectName !== project.name) {
@@ -105,8 +113,16 @@ const ProjectDetail = () => {
                             </h1>
                         )}
                         <Badge variant="outline" className="capitalize">{project.status}</Badge>
-
                     </div>
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-destructive hover:text-destructive hover:bg-destructive/10 gap-2"
+                        onClick={handleDeleteProject}
+                    >
+                        <Trash2 size={18} />
+                        Delete Project
+                    </Button>
                 </div>
 
                 <Tabs defaultValue={modules[0]?.id || "add-module"} className="space-y-8">
