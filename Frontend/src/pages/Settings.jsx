@@ -7,7 +7,8 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from 'sonner';
 import useUIStore from '../store/uiStore';
 import Layout from '../components/layout/Layout';
-import api from '../lib/api';
+import api from '@/lib/api';
+
 import { useQueryClient } from '@tanstack/react-query';
 
 const Settings = () => {

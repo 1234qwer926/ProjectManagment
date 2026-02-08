@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { toast } from 'sonner';
 import useAuthStore from '../store/authStore';
-import api from '../lib/api';
+import api from '@/lib/api';
+
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
